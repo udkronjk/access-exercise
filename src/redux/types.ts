@@ -19,6 +19,23 @@ export interface I_UserListItem {
     site_admin: boolean;
 }
 
+export interface I_UserDetail extends I_UserListItem {
+    name: string;
+    company: string;
+    blog: string;
+    location: string;
+    email: string;
+    hireable: boolean;
+    bio: string;
+    twitter_username: string;
+    public_repos: number;
+    public_gists: number;
+    followers: number;
+    following: number;
+    created_at: Date;
+    updated_at: Date;
+}
+
 export interface I_RES_AccessToken {
     access_token: string;
     scope: string;
