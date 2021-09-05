@@ -1,7 +1,7 @@
 import { Actions, E_USER_ACTION } from '../actions';
 import { I_UserListItem } from '../types';
 
-enum E_LOGIN_STATUS {
+export enum E_LOGIN_STATUS {
     UNLOGIN = 'UNLOGIN',
     DURING_LOGIN = 'DURING_LOGIN',
     LOGINED = 'LOGINED',

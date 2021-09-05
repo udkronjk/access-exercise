@@ -1,16 +1,27 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { useAppSelector } from '../../redux/configureStore';
+import { E_LOGIN_STATUS } from '../../redux/reducers';
 
 interface I_Header {
     onLogin: () => void;
 }
 
+// TODO: logout -> page refresh, and clear access_token cookie.
 export const Header: React.FC<I_Header> = (props) => {
+    const loginStatus = useAppSelector((state) => state.userReducer.loginStatus);
     return (
         <StyledHeader>
             <h1>Github user List</h1>
             <div>
-                <button onClick={props.onLogin}>Login</button>
+                {loginStatus !== E_LOGIN_STATUS.LOGINED ? (
+                    <button
+                        onClick={props.onLogin}
+                        disabled={loginStatus !== E_LOGIN_STATUS.UNLOGIN}
+                    >
+                        {loginStatus === E_LOGIN_STATUS.UNLOGIN ? 'Login' : 'Logining'}
+                    </button>
+                ) : null}
             </div>
         </StyledHeader>
     );
