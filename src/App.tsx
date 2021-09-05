@@ -14,6 +14,8 @@ function App() {
         const url = new URL(document.location.href);
         if (url.searchParams.get('code')) {
             dispatch({ type: E_USER_ACTION.FETCH_TOKEN, payload: url.searchParams.get('code') });
+            // clear url code parameter
+            window.history.pushState({}, '', document.location.href.split('?')[0]);
         }
     }, []);
 

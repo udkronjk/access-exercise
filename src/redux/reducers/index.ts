@@ -27,7 +27,6 @@ export const userReducer = (state = defaultUserState, action: Actions): I_UserSt
         case E_USER_ACTION.FETCH_TOKEN:
             return { ...state, loginStatus: E_LOGIN_STATUS.DURING_LOGIN };
         case E_USER_ACTION.LOGINED:
-            console.log('access token', action.payload);
             return { ...state, loginStatus: E_LOGIN_STATUS.LOGINED, accessToken: action.payload };
         default:
             return state;
