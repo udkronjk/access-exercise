@@ -3,6 +3,8 @@ import { ajax } from 'rxjs/ajax';
 import { ofType } from 'redux-observable';
 import { E_USER_ACTION } from '../actions';
 
+// TODO: response code 判斷，例如 304 not Modified，就不需要重新 dispatch
+
 export const fetchUserList = (action$) => {
     return action$.pipe(
         ofType(E_USER_ACTION.FETCH_USER_LIST),
@@ -29,7 +31,7 @@ export const fetchToken = (action$) => {
                 })
                 .pipe(
                     map((data) => {
-                        console.log('login', data);
+                        // TODO: save access_token in cookie. When page refresh, user can keep it.
                         return { type: E_USER_ACTION.LOGINED, payload: data.response.access_token };
                     })
                 );
