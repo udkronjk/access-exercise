@@ -8,12 +8,16 @@ import { E_USER_ACTION } from '../actions';
 export const fetchUserList = (action$) => {
     return action$.pipe(
         ofType(E_USER_ACTION.FETCH_USER_LIST),
-        // mapTo({ type: E_USER_ACTION.FETCH_USER_LIST_DONE}), // dispatch to next action
         mergeMap((action) => {
             return ajax
-                .getJSON('/api/users?per_page=20&since=0', {
-                    accept: 'application/vnd.github.v3+json',
-                })
+                .getJSON(
+                    `/api/users?per_page=${
+                        (action.payload && action.payload.per_page) || 20
+                    }&since=${(action.payload && action.payload.since) || 0}`,
+                    {
+                        accept: 'application/vnd.github.v3+json',
+                    }
+                )
                 .pipe(
                     map((response) => {
                         return { type: E_USER_ACTION.FETCH_USER_LIST_DONE, payload: response };

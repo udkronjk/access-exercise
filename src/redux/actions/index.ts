@@ -11,6 +11,10 @@ export enum E_USER_ACTION {
 
 export interface I_FecthUserListAction {
     type: E_USER_ACTION.FETCH_USER_LIST;
+    payload?: {
+        since?: number;
+        per_page?: number;
+    };
 }
 
 export interface I_FecthUserListDoneAction {

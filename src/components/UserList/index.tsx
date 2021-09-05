@@ -20,6 +20,17 @@ export const UserList: React.FC<I_UserList> = (props) => {
         }
     };
 
+    const onClickMore = () => {
+        let per_page = 20;
+        if (100 - userList.length < 20) {
+            per_page = 100 - userList.length;
+        }
+        dispatch({
+            type: E_USER_ACTION.FETCH_USER_LIST,
+            payload: { since: userList[userList.length - 1].id, per_page },
+        });
+    };
+
     const userDetailRenderer = (username: string) => {
         if (!userDetailList[username]) {
             return <StyledUserDetail>loading {username}</StyledUserDetail>;
@@ -61,7 +72,7 @@ export const UserList: React.FC<I_UserList> = (props) => {
                         onClickUser(item.login);
                     }}
                 >
-                    <div>{item.id}</div>
+                    <div className="id">{item.id}</div>
                     <div className="avator">
                         <img src={item.avatar_url} alt={item.login} />
                     </div>
@@ -74,7 +85,19 @@ export const UserList: React.FC<I_UserList> = (props) => {
             </StyledUserListItem>
         );
     };
-    return <StyledUserList>{userList ? userList.map(userItemRenderer) : 'no Data'}</StyledUserList>;
+    return (
+        <StyledUserList>
+            {userList ? (
+                <div>
+                    <div>total count: {userList.length}</div>
+                    <div>{userList.map(userItemRenderer)}</div>
+                    {userList.length < 100 ? <div onClick={onClickMore}>more</div> : null}
+                </div>
+            ) : (
+                'no Data'
+            )}
+        </StyledUserList>
+    );
 };
 const StyledUserList = styled.div`
     background-color: #fff;
@@ -95,6 +118,9 @@ const StyledUserInfo = styled.div`
     > * {
         padding: 0.5rem;
     }
+    .id {
+        width: 40px;
+    }
     .avator {
         width: 30px;
         img {
@@ -109,6 +135,8 @@ const StyledUserInfo = styled.div`
         color: #fff;
         font-size: 1rem;
         line-height: 1;
+        padding: 0 3px;
+        margin: 0 0.5rem;
     }
 `;
 

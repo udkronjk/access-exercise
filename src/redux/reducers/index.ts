@@ -8,14 +8,14 @@ export enum E_LOGIN_STATUS {
 }
 
 interface I_UserState {
-    userList?: Array<I_UserListItem>;
+    userList: Array<I_UserListItem>;
     userDetailList: { [key: string]: I_UserDetail };
     loginStatus: E_LOGIN_STATUS;
     accessToken?: string;
 }
 
 const defaultUserState: I_UserState = {
-    userList: undefined,
+    userList: [],
     userDetailList: {},
     loginStatus: E_LOGIN_STATUS.UNLOGIN,
     accessToken: '',
@@ -24,7 +24,7 @@ const defaultUserState: I_UserState = {
 export const userReducer = (state = defaultUserState, action: Actions): I_UserState => {
     switch (action.type) {
         case E_USER_ACTION.FETCH_USER_LIST_DONE:
-            return { ...state, userList: action.payload };
+            return { ...state, userList: [...state.userList, ...action.payload] };
         case E_USER_ACTION.FETCH_USER_DETAIL_DONE:
             let newUserDetailList = { ...state.userDetailList };
             newUserDetailList[action.payload.login] = action.payload;
