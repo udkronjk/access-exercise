@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import { Header } from './components/Header';
+import { UserList } from './components/UserList';
 import { useAppDispatch } from './redux/configureStore';
 import { E_USER_ACTION } from './redux/actions';
 
@@ -26,6 +27,7 @@ function App() {
             <button onClick={() => dispatch({ type: E_USER_ACTION.FETCH_USER_LIST })}>
                 get user list
             </button>
+            <UserList />
         </div>
     );
 }
