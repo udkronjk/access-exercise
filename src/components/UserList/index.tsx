@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { useAppSelector, useAppDispatch } from '../../redux/configureStore';
 import { I_UserListItem } from '../../redux/types';
 import { E_USER_ACTION } from '../../redux/actions';
+import { E_LIST_LOADING_STATUS } from '../../redux/reducers';
+import { Pagination } from '../Pagination';
 
 interface I_UserList {}
 
@@ -10,8 +12,13 @@ export const UserList: React.FC<I_UserList> = (props) => {
     const dispatch = useAppDispatch();
     const userList = useAppSelector((state) => state.userReducer.userList);
     const userDetailList = useAppSelector((state) => state.userReducer.userDetailList);
+    const listLoadingStatus = useAppSelector((state) => state.userReducer.listLoadingStatus);
 
+    const [pageView, setPageView] = React.useState<boolean>(false);
     const [openUser, setOpenUser] = React.useState<string>('');
+    const [curPage, setCurPage] = React.useState<number>(1);
+
+    const refPerPageUsers = React.useRef<number>(20);
 
     const onClickUser = (username: string) => {
         setOpenUser(username === openUser ? '' : username);
@@ -21,14 +28,54 @@ export const UserList: React.FC<I_UserList> = (props) => {
     };
 
     const onClickMore = () => {
-        let per_page = 20;
-        if (100 - userList.length < 20) {
-            per_page = 100 - userList.length;
+        if (listLoadingStatus !== E_LIST_LOADING_STATUS.LOADING) {
+            if (100 - userList.length < 20) {
+                refPerPageUsers.current = 100 - userList.length;
+            }
+            dispatch({
+                type: E_USER_ACTION.FETCH_USER_LIST,
+                payload: {
+                    since: userList[userList.length - 1].id,
+                    per_page: refPerPageUsers.current,
+                },
+            });
         }
-        dispatch({
-            type: E_USER_ACTION.FETCH_USER_LIST,
-            payload: { since: userList[userList.length - 1].id, per_page },
-        });
+    };
+
+    const onChangePage = (page: number) => {
+        setCurPage(page);
+    };
+
+    const onShowPageView = () => {
+        if (userList.length < 100) {
+            dispatch({
+                type: E_USER_ACTION.FETCH_USER_LIST,
+                payload: {
+                    since: userList[userList.length - 1].id,
+                    per_page: 100 - userList.length,
+                },
+            });
+        }
+        setPageView(true);
+    };
+
+    const controllerRenderer = () => {
+        return (
+            <div className="ctrl">
+                <div>{!pageView ? <button onClick={onShowPageView}>Page View</button> : null}</div>
+                <div className="total">Total Count: {userList.length}</div>
+            </div>
+        );
+    };
+
+    const userListRenderer = () => {
+        if (pageView) {
+            return new Array(refPerPageUsers.current).fill('u').map((u, index) => {
+                const curUserIndex = (curPage - 1) * refPerPageUsers.current + index;
+                return userItemRenderer(userList[curUserIndex]);
+            });
+        }
+        return <div>{userList.map(userItemRenderer)}</div>;
     };
 
     const userDetailRenderer = (username: string) => {
@@ -85,13 +132,31 @@ export const UserList: React.FC<I_UserList> = (props) => {
             </StyledUserListItem>
         );
     };
+    const moreButtonRenderer = () => {
+        if (!pageView && userList.length > 0 && userList.length < 100) {
+            return (
+                <div className="more" onClick={onClickMore}>
+                    {listLoadingStatus === E_LIST_LOADING_STATUS.LOADING ? 'Loading...' : 'More'}
+                </div>
+            );
+        }
+    };
+
     return (
         <StyledUserList>
             {userList ? (
                 <div>
-                    <div>total count: {userList.length}</div>
-                    <div>{userList.map(userItemRenderer)}</div>
-                    {userList.length < 100 ? <div onClick={onClickMore}>more</div> : null}
+                    {controllerRenderer()}
+                    {userListRenderer()}
+                    {moreButtonRenderer()}
+                    {pageView ? (
+                        <Pagination
+                            showPages={5}
+                            curPage={curPage}
+                            totalPages={Math.ceil(userList.length / refPerPageUsers.current)}
+                            onPageClick={onChangePage}
+                        />
+                    ) : null}
                 </div>
             ) : (
                 'no Data'
@@ -99,11 +164,36 @@ export const UserList: React.FC<I_UserList> = (props) => {
         </StyledUserList>
     );
 };
+
 const StyledUserList = styled.div`
     background-color: #fff;
     border-radius: 0.5rem;
     padding: 1rem;
     margin: 1rem;
+    .ctrl {
+        display: flex;
+        justify-content: space-between;
+    }
+    .total {
+        color: #666;
+        font-size: 1.2rem;
+        padding: 0.5rem 0;
+        text-align: right;
+    }
+    .more {
+        background-color: orangered;
+        border-radius: 0.5rem;
+        color: #fff;
+        cursor: pointer;
+        font-size: 2rem;
+        line-height: 2;
+        text-align: center;
+        margin: 1rem auto;
+        width: 200px;
+        &:hover {
+            background-color: #e64438;
+        }
+    }
 `;
 
 const StyledUserListItem = styled.div`
@@ -157,7 +247,5 @@ const StyledUserDetail = styled.div`
         img {
             display: block;
         }
-    }
-    .list {
     }
 `;
