@@ -63,3 +63,25 @@ export const fetchToken = (action$) => {
         })
     );
 };
+
+// TODO: merge to fetchToken
+export const fetchAuthUserDetail = (action$) => {
+    return action$.pipe(
+        ofType(E_USER_ACTION.LOGINED),
+        mergeMap((action) => {
+            return ajax
+                .getJSON(`/api/user`, {
+                    accept: 'application/vnd.github.v3+json',
+                    Authorization: `token ${action.payload}`,
+                })
+                .pipe(
+                    map((response) => {
+                        return {
+                            type: E_USER_ACTION.FETCH_AUTH_USER_DETAIL_DONE,
+                            payload: response,
+                        };
+                    })
+                );
+        })
+    );
+};

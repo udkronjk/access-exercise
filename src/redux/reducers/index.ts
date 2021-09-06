@@ -16,6 +16,7 @@ interface I_UserState {
     userList: Array<I_UserListItem>;
     userDetailList: { [key: string]: I_UserDetail };
     loginStatus: E_LOGIN_STATUS;
+    loginUser?: I_UserDetail;
     accessToken?: string;
     listLoadingStatus: E_LIST_LOADING_STATUS;
 }
@@ -24,6 +25,7 @@ const defaultUserState: I_UserState = {
     userList: [],
     userDetailList: {},
     loginStatus: E_LOGIN_STATUS.UNLOGIN,
+    loginUser: undefined,
     accessToken: '',
     listLoadingStatus: E_LIST_LOADING_STATUS.DONE,
 };
@@ -38,6 +40,8 @@ export const userReducer = (state = defaultUserState, action: Actions): I_UserSt
                 userList: [...state.userList, ...action.payload],
                 listLoadingStatus: E_LIST_LOADING_STATUS.DONE,
             };
+        case E_USER_ACTION.FETCH_AUTH_USER_DETAIL_DONE:
+            return { ...state, loginUser: action.payload };
         case E_USER_ACTION.FETCH_USER_DETAIL_DONE:
             let newUserDetailList = { ...state.userDetailList };
             newUserDetailList[action.payload.login] = action.payload;
