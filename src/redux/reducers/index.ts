@@ -40,8 +40,6 @@ export const userReducer = (state = defaultUserState, action: Actions): I_UserSt
                 userList: [...state.userList, ...action.payload],
                 listLoadingStatus: E_LIST_LOADING_STATUS.DONE,
             };
-        case E_USER_ACTION.FETCH_AUTH_USER_DETAIL_DONE:
-            return { ...state, loginUser: action.payload };
         case E_USER_ACTION.FETCH_USER_DETAIL_DONE:
             let newUserDetailList = { ...state.userDetailList };
             newUserDetailList[action.payload.login] = action.payload;
@@ -49,7 +47,12 @@ export const userReducer = (state = defaultUserState, action: Actions): I_UserSt
         case E_USER_ACTION.FETCH_TOKEN:
             return { ...state, loginStatus: E_LOGIN_STATUS.DURING_LOGIN };
         case E_USER_ACTION.LOGINED:
-            return { ...state, loginStatus: E_LOGIN_STATUS.LOGINED, accessToken: action.payload };
+            return {
+                ...state,
+                loginStatus: E_LOGIN_STATUS.LOGINED,
+                accessToken: action.payload.token,
+                loginUser: action.payload.authUserDetail,
+            };
         default:
             return state;
     }

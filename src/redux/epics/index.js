@@ -1,4 +1,4 @@
-import { map, mergeMap, switchMap } from 'rxjs/operators';
+import { map, mergeMap, switchMap, concatMap } from 'rxjs/operators';
 import { ajax } from 'rxjs/ajax';
 import { ofType } from 'redux-observable';
 import { E_USER_ACTION } from '../actions';
@@ -55,31 +55,24 @@ export const fetchToken = (action$) => {
                     code: action.payload,
                 })
                 .pipe(
-                    map((data) => {
+                    switchMap((data) => {
                         // TODO: save access_token in cookie. When page refresh, user can keep it.
-                        return { type: E_USER_ACTION.LOGINED, payload: data.response.access_token };
-                    })
-                );
-        })
-    );
-};
-
-// TODO: merge to fetchToken
-export const fetchAuthUserDetail = (action$) => {
-    return action$.pipe(
-        ofType(E_USER_ACTION.LOGINED),
-        mergeMap((action) => {
-            return ajax
-                .getJSON(`/api/user`, {
-                    accept: 'application/vnd.github.v3+json',
-                    Authorization: `token ${action.payload}`,
-                })
-                .pipe(
-                    map((response) => {
-                        return {
-                            type: E_USER_ACTION.FETCH_AUTH_USER_DETAIL_DONE,
-                            payload: response,
-                        };
+                        return ajax
+                            .getJSON(`/api/user`, {
+                                accept: 'application/vnd.github.v3+json',
+                                Authorization: `token ${data.response.access_token}`,
+                            })
+                            .pipe(
+                                map((response) => {
+                                    return {
+                                        type: E_USER_ACTION.LOGINED,
+                                        payload: {
+                                            token: data.response.access_token,
+                                            authUserDetail: response,
+                                        },
+                                    };
+                                })
+                            );
                     })
                 );
         })

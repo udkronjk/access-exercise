@@ -7,7 +7,6 @@ export enum E_USER_ACTION {
     FETCH_USER_DETAIL_DONE = 'FETCH_USER_DETAIL_DONE',
     FETCH_TOKEN = 'FETCH_TOKEN',
     LOGINED = 'LOGINED',
-    FETCH_AUTH_USER_DETAIL_DONE = 'FETCH_AUTH_USER_DETAIL_DONE',
 }
 
 export interface I_FecthUserListAction {
@@ -38,12 +37,7 @@ export interface I_FetchTokenAction {
 }
 export interface I_FetchTokenDoneAction {
     type: E_USER_ACTION.LOGINED;
-    payload: string; // access token
-}
-
-export interface I_FecthAuthUserDetailDoneAction {
-    type: E_USER_ACTION.FETCH_AUTH_USER_DETAIL_DONE;
-    payload: I_UserDetail;
+    payload: { token: string; authUserDetail: I_UserDetail }; // access token
 }
 
 export type Actions =
@@ -51,6 +45,5 @@ export type Actions =
     | I_FecthUserListDoneAction
     | I_FecthUserDetailAction
     | I_FecthUserDetailDoneAction
-    | I_FecthAuthUserDetailDoneAction
     | I_FetchTokenAction
     | I_FetchTokenDoneAction;
