@@ -1,4 +1,4 @@
-import { map, mergeMap, switchMap, concatMap } from 'rxjs/operators';
+import { map, mergeMap, switchMap } from 'rxjs/operators';
 import { ajax } from 'rxjs/ajax';
 import { ofType } from 'redux-observable';
 import { E_USER_ACTION } from '../actions';

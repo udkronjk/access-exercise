@@ -1,3 +1,5 @@
+// TODO: rename: apiTypes
+
 export interface I_UserListItem {
     login: string;
     id: number;
