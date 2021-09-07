@@ -201,10 +201,14 @@ const StyledUserListItem = styled.div`
 `;
 
 const StyledUserInfo = styled.div`
-    display: flex;
     align-items: center;
+    cursor: pointer;
+    display: flex;
     font-size: 1.5rem;
     line-height: 1.5;
+    &:hover {
+        background-color: #eee;
+    }
     > * {
         padding: 0.5rem;
     }

@@ -1,17 +1,19 @@
-import { combineEpics } from 'redux-observable';
-import { combineReducers } from 'redux';
-// import { catchError } from 'rxjs/operators';
+import { combineEpics, StateObservable } from 'redux-observable';
+import { combineReducers, Action } from 'redux';
+import { catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { fetchUserList, fetchToken, fetchUserDetail } from '../epics';
 import { userReducer } from '../reducers';
+import { Actions } from '../actions';
 
 export const rootEpic = combineEpics(fetchUserList, fetchUserDetail, fetchToken);
 
 // TODO: add global error handler
-// const epics = [getUserList, tokenLogin];
+// const epics = [fetchUserList, fetchUserDetail, fetchToken];
 // export const rootEpic = (
-//     action$: ActionsObservable<Action>,
-//     store$: StateObservable<State>,
-//     dependencies
+//     action$: Observable<Action<any>>,
+//     store$: StateObservable<any>,
+//     dependencies: any
 // ) =>
 //     combineEpics(...epics)(action$, store$, dependencies).pipe(
 //         catchError((error, source) => {

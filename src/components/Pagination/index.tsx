@@ -25,6 +25,7 @@ export const Pagination: React.FC<I_Pagination> = (props) => {
             return (
                 <div
                     className={`page ${startPage + index === props.curPage ? 'active' : ''}`}
+                    key={startPage + index}
                     onClick={() => {
                         if (startPage + index !== props.curPage) {
                             props.onPageClick(startPage + index);
